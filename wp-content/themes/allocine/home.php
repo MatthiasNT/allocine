@@ -2,20 +2,29 @@
 
 <div id="content" class="container">
   <div class="row">
-    <h1 class="col-sm-12">Contenu Principal</h1>
+    <h1 class="col-sm-12">Derniers Films</h1>
   </div>
   <div class="row">
     <?php
+    
+    $args=array(
+      'post_type' => 'film',
+      'posts_per_page' => 6,
+      'orderby' => 'date',
+      'order' => 'DESC',
+    );
+    
+    $the_query = new WP_Query( $args);
     // boucle WordPress
-    if (have_posts()){
-      while (have_posts()){
-        the_post();
+    if ($the_query->have_posts() ){
+      while ($the_query->have_posts() ){
+        $the_query->the_post();
     ?>
       <article class="col-sm-12 col-md-4">
         <?php
         if(has_post_thumbnail( )){
           echo '<div class="thumbnail">';
-          the_post_thumbnail("hub_article_thumbnail");
+          the_post_thumbnail("hub_film_thumbnail");
           echo '</div>';
         }
         ?>
@@ -27,15 +36,13 @@
       </article>
       <?php
       }
-    } else {
-      ?>
-      Nous n'avons pas trouvé d'article répondant à votre recherche
-      <?php
     }
-      ?>
-    <div class="pagination">
-      <?php wp_pagenavi(); ?>
-    </div>
+    wp_reset_postdata();
+    ?>
+  </div>
+  <div class="pagination">
+    <?= wp_pagenavi(array( 'query'=> $the_query ));
+    ?>
   </div>
 </div>
 
